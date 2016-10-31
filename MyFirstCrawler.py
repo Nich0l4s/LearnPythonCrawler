@@ -1,8 +1,6 @@
 # _*_coding: utf-8 _*_
 import requests
 from bs4 import BeautifulSoup
-
-import codecs
 import csv
 
 __author__ = 'Nicholas'
