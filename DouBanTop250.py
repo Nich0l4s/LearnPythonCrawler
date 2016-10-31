@@ -7,8 +7,8 @@ from bs4 import BeautifulSoup
 DOWNLOAD_URL = 'http://movie.douban.com/top250'
 
 
-def get_html(url):
-    data = requests.get(url).content
+def get_html(url, params=None):
+    data = requests.get(url, params=params).content
     return data
 
 
