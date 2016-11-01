@@ -3,10 +3,14 @@
 import requests
 import json
 import csv
+import os
 from bs4 import BeautifulSoup
+
 
 DOWNLOAD_URL = 'http://www.lagou.com/jobs/list_Python?px=default&city=%E5%85%A8%E5%9B%BD#filterBox'
 INFO_URL = 'http://www.lagou.com/jobs/positionAjax.json?px=default&needAddtionalResult=false'
+LOGO_URL = 'http://www.lgstatic.com/thumbnail_120x120/'
+LOGO_PATH = 'E:\项目\拉勾网爬虫\Logo\\'
 
 
 def post_form(url, data=None):
@@ -32,6 +36,8 @@ def get_total_page(url):
 
 def main():
     total = get_total_page(DOWNLOAD_URL)
+    if not os.path.exists(LOGO_PATH):
+        os.mkdir(LOGO_PATH)
     with open('LaGouPython.csv', 'w', newline='') as f:
         writer = csv.writer(f)
         writer.writerow(['职位', '薪水', '工作地点', '公司名称', '工作时间', '教育程度'])
@@ -47,6 +53,16 @@ def main():
                         ('' if info['businessZones'] is None else '·' + info['businessZones'][0]),
                         info['companyFullName'], info['workYear'], info['education']]
                 writer.writerow(data)
+                name = LOGO_PATH + info['companyLogo'].split('/')[-1]
+                mark = name.find('?')
+                if mark != -1:
+                    name = name[:mark]
+                if os.path.exists(name):
+                    pass
+                else:
+                    logo = requests.get(LOGO_URL + info['companyLogo']).content
+                    with open(name, 'wb') as lf:
+                        lf.write(logo)
 
 
 if __name__ == '__main__':
