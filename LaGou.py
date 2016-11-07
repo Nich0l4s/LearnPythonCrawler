@@ -56,30 +56,34 @@ def main():
             'pn': str(index),
             'kd': 'Python'
         }
-        json_obj = post_form(INFO_URL, data=data)
-        for info in json_obj['content']['positionResult']['result']:
-            name = LOGO_PATH + info['companyLogo'].split('/')[-1]
-            mark = name.find('?')
-            if mark != -1:
-                name = name[:mark]
-            if os.path.exists(name):
-                pass
-            else:
-                logo = requests.get(LOGO_URL + info['companyLogo']).content
-                with open(name, 'wb') as lf:
-                    lf.write(logo)
-            data = {
-                'positionId': info['positionId'],
-                'positionName': info['positionName'],
-                'salary': info['salary'],
-                'city': info['city'],
-                'businessZones': info['businessZones'],
-                'companyFullName': info['companyFullName'],
-                'workYear': info['workYear'],
-                'education': info['education'],
-                'logoPath': name
-            }
-            save_data(data)
+        get_info(data)
+
+
+def get_info(data):
+    json_obj = post_form(INFO_URL, data=data)
+    for info in json_obj['content']['positionResult']['result']:
+        name = LOGO_PATH + info['companyLogo'].split('/')[-1]
+        mark = name.find('?')
+        if mark != -1:
+            name = name[:mark]
+        if os.path.exists(name):
+            pass
+        else:
+            logo = requests.get(LOGO_URL + info['companyLogo']).content
+            with open(name, 'wb') as lf:
+                lf.write(logo)
+        data = {
+            'positionId': info['positionId'],
+            'positionName': info['positionName'],
+            'salary': info['salary'],
+            'city': info['city'],
+            'businessZones': info['businessZones'],
+            'companyFullName': info['companyFullName'],
+            'workYear': info['workYear'],
+            'education': info['education'],
+            'logoPath': name
+        }
+        save_data(data)
 
 
 if __name__ == '__main__':
