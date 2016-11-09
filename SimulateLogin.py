@@ -16,14 +16,14 @@ from bs4 import BeautifulSoup
 
 LOGIN_URL = 'http://www.zhihu.com/#signin'
 LOGIN_SUBMIT_URL = 'https://www.zhihu.com/login/email'
-CAPCHA_URL = 'https://www.zhihu.com/captcha.gif?r={time}&type=login'
-CAPCHA_PATH = 'E:\项目\模拟登陆\\'
+CAPTCHA_PATH = 'https://www.zhihu.com/captcha.gif?r={time}&type=login'
+CAPTCHA_PATH = 'E:\\项目\\模拟登陆\\'
 
 
-def kill_captcha(data):
-    if not os.path.exists(CAPCHA_PATH):
-        os.mkdir(CAPCHA_PATH)
-    with open(CAPCHA_PATH + 'capcha.gif', 'wb') as f:
+def kill_captcha(data, path=CAPTCHA_PATH, name='capcha.gif'):
+    if not os.path.exists(path):
+        os.makedirs(path)
+    with open(path + name, 'wb') as f:
         f.write(data)
     print(data)
     return input('验证码：')
@@ -35,7 +35,7 @@ def login(email, password, captcha):
     session.headers['User-Agent'] = 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 ' \
                                     '(KHTML, like Gecko) Chrome/54.0.2840.71 Safari/537.36'
     _xsrf = BeautifulSoup(session.get(LOGIN_URL).content, 'html.parser').find('input', attrs={'name': '_xsrf'})['value']
-    pic_capcha = session.get(CAPCHA_URL.format(time=int(time.time() * 1000))).content
+    pic_capcha = session.get(CAPTCHA_PATH.format(time=int(time.time() * 1000))).content
     form = {
         '_xsrf': _xsrf,
         'password': password,
